@@ -40,6 +40,10 @@ const userSchema = new Schema({
         type: Date,
         default: null
     },
+    countLogin: {
+        type: Number,
+        default: 0
+    }
 
 }, {
     timestamps: true,
