@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
 
     id: {
-        type: Number,
+        type: String,
         required: true,
         unique: true
     },
@@ -34,7 +34,11 @@ const userSchema = new Schema({
     },
     accountType: {
         type: String,
-        default: "Farmer",
+        default: "Student",
+    },
+    lastLogin: {
+        type: Date,
+        default: null
     },
 
 }, {
