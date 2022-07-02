@@ -9,6 +9,7 @@ const nodemailer = require("nodemailer");
 const app = express();
 const path = require("path")
 const authRouter = require("./routes/authRoute");
+const adminRoutes = require("./routes/adminRoute");
 
 // ADD THIS
 var cors = require("cors");
@@ -98,6 +99,8 @@ mongoose
 
 //Auth routes
 app.use("/auth", authRouter);
+//User routes
+app.use("/admin", adminRoutes);
 
 app.listen(port, () => {
     console.log(`App is Listening on PORT ${port}`.cyan.underline);

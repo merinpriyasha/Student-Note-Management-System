@@ -36,10 +36,6 @@ const userSchema = new Schema({
         type: String,
         default: "Student",
     },
-    lastLogin: {
-        type: Date,
-        default: null
-    },
     countLogin: {
         type: Number,
         default: 0

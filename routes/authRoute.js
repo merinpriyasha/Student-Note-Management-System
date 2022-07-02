@@ -120,12 +120,12 @@ router.post('/login', async(req, res) => {
         if (!result) return res.status(400).send('Invalid Password');
 
 
-        User.findOneAndUpdate({ email: req.body.email }, { $inc: { countLogin: 1 } }, { $set: { lastLogin: Date.now() } }, (err, data) => {
+        User.findOneAndUpdate({ email: req.body.email }, { $inc: { countLogin: 1 }, $set: { status: true } }, (err, data) => {
             if (err) console.log(err);
             else console.log("increment login count");
         });
 
-        const token = jwt.sign({ id: user.id, accountType: user.accountType, countLogin: user.countLogin },
+        const token = jwt.sign({ _id: user._id, accountType: user.accountType, countLogin: user.countLogin },
             keys.JWT_SECRET
         );
         res.status(200).json({
@@ -144,9 +144,70 @@ router.get('/dashboard', verifyToken, (req, res) => {
 
 router.get('/logout', verifyToken, (req, res) => {
     console.log('called');
+    User.findOneAndUpdate({ _id: req.user._id }, { $set: { status: false } }, (err, data) => {
+        if (err) console.log(err);
+        else console.log("profile status: deactive");
+    });
+
     res.json({
         message: 'Logging out sucessfull',
         user: req.user,
+    });
+});
+
+//Get Authorized(Logged users) detilas Only
+//This can be used to show the authorized user details in Profile page
+router.get("/getAuthUser", verifyToken, async(req, res) => {
+    let userID = req.user._id;
+
+    const user = await User.findById(userID)
+        .then((user) => {
+            res.status(200).send({ status: "User details fetched..", user });
+        })
+        .catch((err) => {
+            console.log(err.message);
+            res
+                .status(500)
+                .send({ status: "Error with get user", error: err.message });
+        });
+});
+
+//Update details of Authorized(Logged) user without adding other person deteatils
+router.route("/updateAuthUser").put(verifyToken, async(req, res) => {
+    let userID = req.user._id;
+
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+    const dateOfBirth = req.body.dateOfBirth;
+    const mobile = Number(req.body.mobile);
+    const password = req.body.password;
+    const accountType = "Student"
+
+
+    const updateUser = {
+        firstName,
+        lastName,
+        dateOfBirth,
+        mobile,
+        password,
+        accountType
+    };
+
+    bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(updateUser.password, salt, async(err, hash) => {
+            //Hash Password
+            updateUser.password = hash;
+            const update = await User.findByIdAndUpdate(userID, updateUser)
+                .then(() => {
+                    res.status(200).send({ status: "User details updated.." });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res
+                        .status(500)
+                        .send({ status: "Error with updating data", error: err.message });
+                });
+        });
     });
 });
 
