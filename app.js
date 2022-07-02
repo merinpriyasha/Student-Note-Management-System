@@ -10,6 +10,7 @@ const app = express();
 const path = require("path")
 const authRouter = require("./routes/authRoute");
 const adminRoutes = require("./routes/adminRoute");
+const subjectRoute = require("./routes/studentRoute");
 
 // ADD THIS
 var cors = require("cors");
@@ -101,6 +102,8 @@ mongoose
 app.use("/auth", authRouter);
 //User routes
 app.use("/admin", adminRoutes);
+//Subject route
+app.use("/subject", subjectRoute);
 
 app.listen(port, () => {
     console.log(`App is Listening on PORT ${port}`.cyan.underline);
