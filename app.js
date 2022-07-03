@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const colors = require("colors");
 
 const keys = require("./config/keys");
-const dotenv = require("dotenv").config();
+require('dotenv').config();
 const port = process.env.PORT || 3002;
 const nodemailer = require("nodemailer");
 const app = express();
@@ -14,7 +14,6 @@ const subjectRoute = require("./routes/studentRoute");
 
 // ADD THIS
 var cors = require("cors");
-const { response } = require("express");
 app.use(cors());
 
 //mailer
@@ -89,6 +88,10 @@ app.use(express.static(path.join(__dirname, "static")));
 //         })
 //     })
 //MongoDB connection
+
+var uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@mernproject.zum2gmm.mongodb.net/${process.env.MONGO_DATABSE}`;
+
+
 mongoose
     .connect(keys.mongoDBUri, { useNewUrlParser: true, useUnifiedTopology: true })
     .then((res) => {
