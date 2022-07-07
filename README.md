@@ -29,6 +29,10 @@
 `$ npm i       // npm install packages`\
 `$ npm run dev // run it locally`
 
+### Postman documentation
+
+* https://documenter.getpostman.com/view/19580307/UzJLMvce 
+
 ## Screenshots of this project
  
 ![Capture1](https://user-images.githubusercontent.com/68733175/177757385-9d37573d-c30a-4fb3-82c7-697141cc650d.PNG)
