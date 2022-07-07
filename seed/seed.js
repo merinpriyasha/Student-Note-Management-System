@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 let Admin = require("../models/user-model");
 const keys = require("../config/keys");
 const colors = require("colors");
+const bcrypt = require("bcryptjs");
 
 //MongoDB connection
 mongoose
@@ -13,6 +14,9 @@ mongoose
         console.log(err);
     });
 
+    const password = 'admin123'
+    const hash = bcrypt.hashSync(password, 10);
+
 const seedAdmin = [{
     id: 'a123d456m789i012n345',
     firstName: 'William',
@@ -20,7 +24,7 @@ const seedAdmin = [{
     dateOfBirth: 1986 - 2 - 18,
     status: true,
     email: 'admin123@gmail.com',
-    password: 'admin123',
+    password: hash,
     accountType: 'Admin'
 }];
 

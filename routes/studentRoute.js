@@ -76,7 +76,7 @@ router.route("/updateNote/:id").put(verifyToken, async(req, res) => {
 //Delete note details
 router.route("/deleteNote/:id").delete(async(req, res) => {
     let noteID = req.params.id;
-    if (req.user.accountType == "Student") {
+  
         await Note.findByIdAndDelete(noteID)
             .then(() => {
                 res.status(200).send({ status: "Note deleted.." });
@@ -87,9 +87,7 @@ router.route("/deleteNote/:id").delete(async(req, res) => {
                     .status(500)
                     .send({ status: "Error with delete note", error: err.message });
             });
-    } else {
-        res.json("Student can create any notes");
-    }
+   
 });
 
 //Read All notes
@@ -98,7 +96,8 @@ router.route("/getNotes").get(verifyToken, async(req, res) => {
     let userID = req.user._id;
     const notes = await Note.find({ studentId: userID })
         .then((user) => {
-            res.status(200).send({ status: "note details fetched..", user });
+            //res.status(200).send({ status: "note details fetched..", user });
+            res.json(user);
         })
         .catch((err) => {
             console.log(err.message);
@@ -107,5 +106,25 @@ router.route("/getNotes").get(verifyToken, async(req, res) => {
                 .send({ status: "Error with get notes", error: err.message });
         });
 });
+
+//Read specific accessible user details
+router.route("/get/:id").get(verifyToken, async(req, res) => {
+    let noteID = req.params.id;
+    if (req.user.accountType == "Student") {
+        const user = await Note.findById(noteID)
+            .then((note) => {
+                res.status(200).send({ status: "User details fetched..", note });
+            })
+            .catch((err) => {
+                console.log(err.message);
+                res
+                    .status(500)
+                    .send({ status: "Error with get user", error: err.message });
+            });
+    } else {
+        res.json("Only admin have access for this");
+    }
+});
+
 
 module.exports = router;

@@ -211,4 +211,12 @@ router.route("/updateAuthUser").put(verifyToken, async(req, res) => {
     });
 });
 
+//Get token details
+router.get("/getAuthDetails", verifyToken, async(req, res) => {
+    let userID = req.user._id;
+    let accType = req.user.accountType;
+    let count = req.user.countLogin;
+
+    res.status(200).send({ status: "User details fetched..", id: userID, accountType: accType, count: count });
+});
 module.exports = router;
