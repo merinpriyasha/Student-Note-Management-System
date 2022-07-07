@@ -50,7 +50,7 @@ router.route("/add").post(async(req, res) => {
         from: "merinpriyasha@gmail.com",
         to: email,
         subject: "Your Password",
-        text: `Hi, this is your password: ${password}, click this got to system https://students.flinders.edu.au/support/computing/student-system `
+        text: `Hi, this is your password: ${password}, click this got to system http://localhost:3000/sign-in `
     }
 
     transporter.sendMail(mailOption, function(err, success) {

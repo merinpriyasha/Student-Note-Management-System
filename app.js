@@ -35,15 +35,6 @@ let mailOption = {
     text: "test"
 }
 
-// transporter.sendMail(mailOption, function(err, success) {
-//         if (err) {
-//             console.log(err)
-//         } else {
-//             console.log("Email sent successfully");
-//         }
-//     })
-//allow OPTIONS on all resources
-
 
 app.options("*", cors());
 
@@ -52,42 +43,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "static")));
 
-//Routing
-// app.get("/", function(req, res) {
-//     res.sendFile(path.join(__dirname, "static/index.html"))
-// })
 
-// app.post("/send_email", function(req, res) {
-//         var from = req.body.from;
-//         var to = req.body.to;
-//         var subject = req.body.subject;
-//         var message = req.body.message;
-
-//         var transporter = nodemailer.createTransport({
-//             service: 'gamil',
-//             auth: {
-//                 user: 'merinpriyasha@gmail.com',
-//                 pass: 'jrrwbmmpwibtsxxl'
-//             }
-//         });
-
-//         var mailOption = {
-//             from: from,
-//             to: to,
-//             subject: subject,
-//             text: message
-//         };
-
-//         transporter.sendMail(mailOption, function(err, info) {
-//             if (err) {
-//                 console.log(err)
-//             } else {
-//                 console.log("Email Sent:" + info.response)
-//             }
-//             response.redirect('/')
-//         })
-//     })
-//MongoDB connection
 
 var uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@mernproject.zum2gmm.mongodb.net/${process.env.MONGO_DATABSE}`;
 

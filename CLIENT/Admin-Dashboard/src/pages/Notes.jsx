@@ -6,6 +6,7 @@ import "antd/dist/antd.css";
 import { useCookies } from "react-cookie";
 import Grid from "@mui/material/Grid";
 import { PlusOutlined } from "@ant-design/icons";
+import axios from "axios";
 
 import {
   Modal,
@@ -21,12 +22,24 @@ import {
 
 const { Title } = Typography;
 
+
+
+// axios.defaults.headers = {
+//   "Content-Type": "application/json",
+//   "x-auth-token": cookies[0].token,
+// };
+
 const Students = () => {
   const [data, setdata] = useState([]);
   const [modaldata, setmodaldata] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isInsertModalVisible, setIsInsertModelVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
+  const [insertDescription, setInsertDescription] = useState("");
+  const [insertTitle, setInsertTitle] = useState("");
+
+ 
 
   const {
     getNoteById,
@@ -68,6 +81,7 @@ const Students = () => {
     },
   ];
   const [cookies] = useCookies(['token']);
+
   useEffect(async () => {
     
     const headers = {
@@ -106,14 +120,25 @@ const {
   description
     } = modaldata
 
+
+    const note = {
+      //id: modaldata._id,
+        title: modaldata.title,
+        description: modaldata.description,
+       
+  }
+
     const showModal = () => {
-      setIsModalVisible(true);
+      setIsInsertModelVisible(true);
     };
 
  const handleCancel = () => {
     setIsModalVisible(false);
   };
 
+  const handleInsertModelCancel = () => {
+    setIsInsertModelVisible(false);
+  };
   const handleConfirmDelete = async () => {
     await deleteNote(_id);
     handleDeleteModalCancel();
@@ -121,7 +146,7 @@ const {
   };
 
   const handleConfirmUpdate = async () => {
-    await updateNote(_id, {title, description});
+    await updateNote(_id, note);
     handleUpdateModalCancel();
   };
 
@@ -133,30 +158,47 @@ const {
     setIsUpdateModalVisible(false);
   };
 
+  const layout = {
+    labelCol: {
+      span: 6,
+    },
+    wrapperCol: {
+      span: 16,
+    },
+  };
+ 
+  const http = axios.create({
+    headers: {
+      "Content-type": "application/json",
+      "x-auth-token": cookies.token,
+    }});
   //Add Feed
-  const AddFeedHandler = async () => {
-    console.log(cookies[0].token);
+  const AddNoteHandler = async () => {
+
     const formData = new FormData();
-    //formData.append("imageUrl", selectedFile);
-    formData.append("description", insertMessage);
-    formData.append("title", insertTag);
-    //formData.append("published", "Yes");
-    console.log("this is form data", selectedFile);
+    
+    formData.append("description", insertDescription);
+    formData.append("title", insertTitle);
+  
     try {
-      await axios.post(
-        "http://localhost:3002/subject/addNote",
-        formData
-      );
-      setIsModalVisible(false);
+      await http.post(
+        "http://localhost:3002/subject/addNote", note);
+      setIsInsertModelVisible(false);
     } catch (error) {
       alert("Error Occcured");
     }
   };
 
+  //Refresh page
+  function refreshPage() {
+    window.location.reload(false);
+  }
+
   return (
     <>
-     
-    {/* <Grid item>
+    
+    <Grid container direction="column" spacing={4}> 
+    <Grid item>
           <Grid item container justifyContent="flex-end">
             <Grid item>
               <Button
@@ -166,16 +208,16 @@ const {
                 onClick={showModal}
                 style={{ color: "white" }}
               >
-                Add Feed
+                Add Note
               </Button>
               <Modal
-                title="Add New Feed"
-                visible={isModalVisible}
-                onCancel={handleCancel}
-                onOk={AddFeedHandler}
+                title="Add New Note"
+                visible={isInsertModalVisible}
+                onCancel={handleInsertModelCancel}
+                onOk={AddNoteHandler}
               >
-                <Form {...Layout}>
-                  <Form.Item name={["user", "tag"]} label="Tag"
+                <Form {...layout}>
+                  <Form.Item name={["user", "title"]} label="Title"
                   rules={[
                     {
                       required: true,
@@ -185,12 +227,12 @@ const {
                   >
                     <Input
                       type="text"
-                      value={insertTag}
-                      onChange={(event) => setInsertTag(event.target.value)}
+                      value={insertTitle}
+                      onChange={(event) => setInsertTitle(event.target.value)}
                     />
                   </Form.Item>
                   <Form.Item
-                    name={["user", "name"]}
+                    name={["user", "description"]}
                     label="Description"
                     rules={[
                       {
@@ -200,8 +242,8 @@ const {
                   >
                     <Input
                       type="text"
-                      value={insertMessage}
-                      onChange={(event) => setInsertMessage(event.target.value)}
+                      value={insertDescription}
+                      onChange={(event) => setInsertDescription(event.target.value)}
                     />
                   </Form.Item>
                   
@@ -209,8 +251,9 @@ const {
               </Modal>
             </Grid>
           </Grid>
-        </Grid> */}
-
+        </Grid>
+      </Grid>    
+         
       <Content>
         <Row gutter={[24, 0]}>
           <Col xs="24" xl={24}>
@@ -317,15 +360,137 @@ const {
           <Button key="back" onClick={handleUpdateModalCancel}>
             Cancel
           </Button>,
-          <Button type="primary" onClick={handleConfirmUpdate}>
+          <Button type="primary" onClick= {handleConfirmUpdate}>
             update
           </Button>,
         ]}
       >
-        Form should be Here for tree <b>{_id}</b>
+        {/* Form should be Here for tree <b>{_id}</b> */}
         {/* Add Form here  */}
+        <Form {...layout}>
+                <Form.Item
+                  name="title"
+                  label="Title"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter the title",
+                    },
+                    {
+                      whitespace: true
+                    },
+                    { min: 3},
+                  ]}
+                  hasFeedback
+                >
+                  <Input name="title" placeholder={modaldata.title} defaultValue={modaldata.title}
+                  onChange={(event) => {
+                    setmodaldata({
+                      ...modaldata,
+                      title: event.target.value
+                    })
+                  }}
+                  />
+                </Form.Item>
+                <Form.Item
+                  name="description"
+                  label="Description"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter the description",
+                    },
+                    {
+                      whitespace: true
+                    },
+                  ]}
+                  hasFeedback
+                >
+                  <Input name="description" placeholder={modaldata.description} defaultValue={modaldata.description}
+                  onChange={(event) => {
+                    setmodaldata({
+                      ...modaldata,
+                      description: event.target.value
+                    })
+                  }}/>
+                </Form.Item>
+                {/* <Form.Item
+                  name="contactNumber"
+                  label="Contact Number"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter the Contact number",
+                    },
+                    {
+                      whitespace: true
+                    },
+                    { min: 10},
+                    { max: 10},
+                  ]}
+                  hasFeedback
+                >
+                  <Input name="contactNumber" placeholder={modaldata.contactNumber} defaultValue={modaldata.contactNumber}
+                  onChange={(event) => {
+                    setmodaldata({
+                      ...modaldata,
+                      contactNumber: event.target.value.toString()
+                    })
+                  }}/>
+                </Form.Item>
+                <Form.Item
+                  name="address"
+                  label="Address"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter the address",
+                    },
+                    {
+                      whitespace: true
+                    },
+                    { min: 5},
+                  ]}
+                  hasFeedback
+                >
+                  <Input name="address" placeholder={modaldata.address} defaultValue={modaldata.address}
+                  onChange={(event) => {
+                    setmodaldata({
+                      ...modaldata,
+                      address: event.target.value
+                    })
+                  }}/>
+                </Form.Item>
+                <Form.Item
+                  name="type"
+                  label="User Type"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter the user type",
+                    },
+                    {
+                      whitespace: true
+                    },
+                  ]}
+                >
+                  <Select
+                    name="type"
+                    placeholder={modaldata.type}
+                    onChange={(value) => {
+                      setmodaldata({
+                        ...modaldata,
+                        type: value
+                      })
+                    }}
+                  >
+                    <Select.Option value="Auditor">Auditor</Select.Option>
+                    <Select.Option value="Field Agent">Field Agent</Select.Option>
+                  </Select>
+                </Form.Item> */}
+              </Form>
       </Modal>
-      
+     
 
     </>
   );

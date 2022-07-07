@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   Layout,
   Button,
@@ -106,7 +108,7 @@ export default function SignIn() {
                     SIGN IN
                   </Button>
                 </Form.Item>
-               
+                <ToastContainer />
               </Form>
             </Col>
             <Col
@@ -117,6 +119,7 @@ export default function SignIn() {
               md={{ span: 12 }}
             >
               <img src={signinbg} alt="lifeforce logo" />
+             
             </Col>
           </Row>
         </Content>
