@@ -45,6 +45,7 @@
 
 * If the user visits the edit profile he/she can edit his/her personal information including the temporary password as his/her wants 
 
+### Student Dashboard
 
 ![dashboard](https://user-images.githubusercontent.com/68733175/177757479-ca67c11d-67b1-4e18-9acf-b4dd5627bede.PNG)
 
@@ -63,9 +64,19 @@
 * If student want to delete information then he/she need to click on delete button
 * If student view all information without doing any changes then he/she can click cancel button after view details
 
+![add note](https://user-images.githubusercontent.com/68733175/177823399-24cd0df3-2249-474b-9f5c-8f188389ce02.PNG)
+
+* Student can add new notes by clicking add note button 
+
+![update note](https://user-images.githubusercontent.com/68733175/177823438-fdfd0b26-8167-49f4-903a-988fb6fc48aa.PNG)
+
+* Student can update note details if he/she want
+
 ![confirm delete](https://user-images.githubusercontent.com/68733175/177758171-43fef450-32b7-46c2-825f-c2c2246e2f47.PNG)
 
 * If student want to delete some note he/she need to confirm that, after that he/she can delete that note properly.
+
+### Admin Dashboard
 
 ![admin dash](https://user-images.githubusercontent.com/68733175/177758660-970093aa-e3e8-41f2-a48d-44ac985f3b77.PNG)
 
