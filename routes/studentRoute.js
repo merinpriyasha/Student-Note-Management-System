@@ -4,6 +4,7 @@ const { response } = require("express");
 const bcrypt = require("bcryptjs");
 const keys = require("../config/keys");
 const jwt = require("jsonwebtoken");
+require('dotenv').config({ path: '../config/config.env' });
 
 //Verify token function
 function verifyToken(req, res, next) {
@@ -11,7 +12,7 @@ function verifyToken(req, res, next) {
     if (!token) return res.status(401).send('No token provided');
 
     try {
-        const payload = jwt.verify(token, keys.JWT_SECRET);
+        const payload = jwt.verify(token, keys.JWT_SECRET/*process.env.JWT_SECRET*/);
         req.user = payload;
         next();
     } catch (ex) {
@@ -91,7 +92,6 @@ router.route("/deleteNote/:id").delete(async(req, res) => {
 });
 
 //Read All notes
-//Read specific accessible user details
 router.route("/getNotes").get(verifyToken, async(req, res) => {
     let userID = req.user._id;
     const notes = await Note.find({ studentId: userID })

@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const colors = require("colors");
 
 const keys = require("./config/keys");
-require('dotenv').config();
+require('dotenv').config({ path: './config/config.env' });
 const port = process.env.PORT || 3002;
 const nodemailer = require("nodemailer");
 const app = express();
@@ -20,8 +20,8 @@ app.use(cors());
 let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: "merinpriyasha@gmail.com",
-        pass: "jrrwbmmpwibtsxxl"
+        user: process.env.EMAIL_ADDRESS,
+        pass: process.env.EMAIL_PASS
     },
     tls: {
         rejectUnauthorized: false,
@@ -46,7 +46,6 @@ app.use(express.static(path.join(__dirname, "static")));
 
 
 var uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@mernproject.zum2gmm.mongodb.net/${process.env.MONGO_DATABSE}`;
-
 
 mongoose
     .connect(keys.mongoDBUri, { useNewUrlParser: true, useUnifiedTopology: true })

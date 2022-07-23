@@ -1,9 +1,13 @@
 import { useCookies } from "react-cookie";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
+//Set cookie
 export default function DataService(){
    const [cookies] = useCookies(['token']);
 
+   //Base URL
 const http = axios.create({
   baseURL: "http://localhost:3002/",
   headers: {
@@ -11,6 +15,7 @@ const http = axios.create({
     "x-auth-token": cookies.token
   }});
 
+  //Get Student APIs intergration
   async function getStudents(){
     const data = await http.get("/admin").then((res) => res.data.Result)
      return data
@@ -27,18 +32,21 @@ const http = axios.create({
         .catch((err) => console.log(err));
     }
 
+    //get Student details by ID API 
     async function getStudentorById(id) {
       const data = await http.get("/admin/get/" + id).then((res) => res.data.Result);
       console.log(data);
       //  return data
     }
 
+    //Get Note by ID API
     async function getNoteById(id) {
       const data = await http.get("/subject/get/" + id).then((res) => res.data.Result);
       console.log(data);
       //  return data
     }
 
+    //Update note details
     async function updateNote(Id, notes) {
 
       const { title, description } = notes;
@@ -49,8 +57,9 @@ const http = axios.create({
       // return data;
     }
   
+    //Delete note details
     async function deleteNote(Id) {
-      const data = await http.delete("/subject/deleteNote/" + Id).then((res) => res);
+      const data = await http.delete("/subject/deleteNote/" + Id).then((res) => toast.success(res.data.status));
       console.log(
         data.status === 200
           ? data.data.message
@@ -60,5 +69,6 @@ const http = axios.create({
     }
   
 
+    //Return ALL backend APIs
     return {getStudents, AuthEdit, getStudentorById, getNoteById, updateNote, deleteNote}
 }

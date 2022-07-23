@@ -7,6 +7,8 @@ import { useCookies } from "react-cookie";
 import Grid from "@mui/material/Grid";
 import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import {
   Modal,
@@ -141,12 +143,15 @@ const {
   };
   const handleConfirmDelete = async () => {
     await deleteNote(_id);
+    toast.success("Deleted")
+    refreshPage();
     handleDeleteModalCancel();
     handleCancel();
   };
 
   const handleConfirmUpdate = async () => {
     await updateNote(_id, note);
+    refreshPage();
     handleUpdateModalCancel();
   };
 
@@ -175,17 +180,25 @@ const {
   //Add Feed
   const AddNoteHandler = async () => {
 
-    const formData = new FormData();
+    // const formData = new FormData();
     
-    formData.append("description", insertDescription);
-    formData.append("title", insertTitle);
+    // formData.append("description", insertDescription);
+    // formData.append("title", insertTitle);
   
     try {
       await http.post(
         "http://localhost:3002/subject/addNote", note);
+        //alert("Added");
+        toast.success("Added succefully", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 2000,
+          hideProgressBar: true
+        });
+        refreshPage();
       setIsInsertModelVisible(false);
     } catch (error) {
-      alert("Error Occcured");
+      //alert("Error Occcured");
+      toast.error("Error occured")
     }
   };
 
@@ -210,6 +223,7 @@ const {
               >
                 Add Note
               </Button>
+              <ToastContainer />
               <Modal
                 title="Add New Note"
                 visible={isInsertModalVisible}
@@ -221,14 +235,22 @@ const {
                   rules={[
                     {
                       required: true,
+                      message: "Please enter the title",
                     },
+                    {
+                      whitespace: true
+                    },
+                    { min: 3},
                   ]}
-                  
+                  hasFeedback
                   >
                     <Input
                       type="text"
-                      value={insertTitle}
-                      onChange={(event) => setInsertTitle(event.target.value)}
+                      //value={insertTitle}
+                      onChange={(event) => setmodaldata({
+                        ...modaldata,
+                        title: event.target.value
+                      })}
                     />
                   </Form.Item>
                   <Form.Item
@@ -237,13 +259,23 @@ const {
                     rules={[
                       {
                         required: true,
+                        message: "Please enter the description",
+                        
                       },
+                    {
+                      whitespace: true
+                    },
+                    { min: 3},
                     ]}
+                    hasFeedback
                   >
                     <Input
                       type="text"
-                      value={insertDescription}
-                      onChange={(event) => setInsertDescription(event.target.value)}
+                      //value={insertDescription}
+                      onChange={(event) => setmodaldata({
+                        ...modaldata,
+                        description: event.target.value
+                      })}
                     />
                   </Form.Item>
                   
@@ -302,8 +334,10 @@ const {
           <Button key="back" onClick={handleCancel}>
             Cancel
           </Button>,
+          <ToastContainer />
         ]}
       >
+      
 
 <Row gutter={[16, 16]}>
           <Col md={12} xs={24}>
@@ -344,8 +378,10 @@ const {
           <Button type="danger" onClick={handleConfirmDelete}>
             Delete
           </Button>,
+         <ToastContainer />
         ]}
       >
+         
         Are you sure You want to delete <b>{_id}</b> ?
       </Modal>
 
@@ -363,8 +399,10 @@ const {
           <Button type="primary" onClick= {handleConfirmUpdate}>
             update
           </Button>,
+          <ToastContainer />
         ]}
       >
+
         {/* Form should be Here for tree <b>{_id}</b> */}
         {/* Add Form here  */}
         <Form {...layout}>

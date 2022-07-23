@@ -10,6 +10,7 @@ const nodemailer = require("nodemailer");
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
+require('dotenv').config({ path: '../config/config.env' });
 
 //Create User account by admin function
 //http://localhost:3002/auth/add
@@ -38,8 +39,8 @@ router.route("/add").post(async(req, res) => {
     let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-            user: "merinpriyasha@gmail.com",
-            pass: "jrrwbmmpwibtsxxl"
+            user: keys.EMAIL_ADDRESS,
+            pass: keys.EMAIL_PASS
         },
         tls: {
             rejectUnauthorized: false,
@@ -47,7 +48,7 @@ router.route("/add").post(async(req, res) => {
     })
 
     let mailOption = {
-        from: "merinpriyasha@gmail.com",
+        from: keys.EMAIL_ADDRESS,
         to: email,
         subject: "Your Password",
         text: `Hi, this is your password: ${password}, click this got to system http://localhost:3000/sign-in `
@@ -86,7 +87,7 @@ function verifyToken(req, res, next) {
     if (!token) return res.status(401).send('No token provided');
 
     try {
-        const payload = jwt.verify(token, keys.JWT_SECRET);
+        const payload = jwt.verify(token,/*process.env.JWT_SECRET*/ keys.JWT_SECRET);
         req.user = payload;
         next();
     } catch (ex) {
@@ -103,6 +104,7 @@ function validateUser(req) {
     return schema.validate(req);
 }
 
+//Login function
 router.post('/login', async(req, res) => {
     const { error } = validateUser(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -127,6 +129,7 @@ router.post('/login', async(req, res) => {
 
         const token = jwt.sign({ _id: user._id, accountType: user.accountType, countLogin: user.countLogin },
             keys.JWT_SECRET
+            //process.env.JWT_SECRET
         );
         res.status(200).json({
             message: 'Login Sucessfull',
@@ -135,6 +138,7 @@ router.post('/login', async(req, res) => {
     });
 });
 
+//Redirect to dashboard
 router.get('/dashboard', verifyToken, (req, res) => {
     res.json({
         message: 'Redirect to dashboard',
@@ -142,6 +146,7 @@ router.get('/dashboard', verifyToken, (req, res) => {
     });
 });
 
+//Logout
 router.get('/logout', verifyToken, (req, res) => {
     console.log('called');
     User.findOneAndUpdate({ _id: req.user._id }, { $set: { status: false } }, (err, data) => {

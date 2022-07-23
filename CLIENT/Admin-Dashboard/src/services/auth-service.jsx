@@ -5,10 +5,12 @@ import jwt from 'jwt-decode' // import dependency
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+//Set token into cookie
 export default function AuthService() {
   const history= useHistory();
   const [, setCookie] = useCookies(['token']);
 
+  //Base URL
 const http = axios.create({
   baseURL: "http://localhost:3002/",
   headers: {
@@ -49,6 +51,6 @@ const http = axios.create({
   }
 
 
-  
+  //return allbackend APIs  
   return { AuthSignin, AuthCreateAccount};
 }
