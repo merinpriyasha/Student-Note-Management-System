@@ -10,6 +10,11 @@ const signupBg = true;
 const { Title } = Typography;
 const { Content } = Layout;
 
+//refresh page
+function refreshPage() {
+  window.location.reload(false);
+}
+
 export default function CreateAccount() {
   const { AuthEdit } = DataService();
 
@@ -17,11 +22,14 @@ export default function CreateAccount() {
   const onFinish = (values) => {
     console.log("Success:", values);
     AuthEdit(values);
+    refreshPage();
+    
   };
 
   // function when validation is unsuccess
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
+    alert("Somthing wrong");
   };
 
   return (
