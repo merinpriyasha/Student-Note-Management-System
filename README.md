@@ -33,6 +33,10 @@
 
 * https://documenter.getpostman.com/view/19580307/UzJLMvce 
 
+### System Diagram
+
+![digram](https://user-images.githubusercontent.com/68733175/183234864-38478a74-0ac7-4e62-98d2-04f8af0c3eac.PNG)
+
 ## Screenshots of this project
  
 ![Capture1](https://user-images.githubusercontent.com/68733175/177757385-9d37573d-c30a-4fb3-82c7-697141cc650d.PNG)
